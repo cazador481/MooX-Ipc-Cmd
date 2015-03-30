@@ -143,11 +143,11 @@ sub _cmd_stdout
   {
       my $self = shift;
       my ($line, $output) = @_;
-      chomp $line;
       if (defined $output)
       {
           push(@$output, $line);
       }
+      chomp $line;
       $self->logger('_cmd')->debug($line);
 }
 
@@ -160,14 +160,14 @@ sub _cmd_stderr
       my $output = shift;
       my $line   = $_;      # output from cmd
 
-      chomp $line;
       return if ($line =~ / Batch system concurrent query limit exceeded/);    # ignores lfs spew
+      push(@$stderr, $line);
+      push(@$output, $line) if (defined $output);
+      chomp $line;
       if ($self->logger('_cmd')->is_debug)
       {
           $self->logger('_cmd')->debug($line);
       }
-      push(@$stderr, $line);
-      push(@$output, $line) if (defined $output);
 }
 
 #most of _check_error stolen from IPC::Simple

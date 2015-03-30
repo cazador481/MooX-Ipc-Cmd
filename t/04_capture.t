@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 use strict;
-use Test::More tests => 12;
+use Test::More tests => 9;
 use Config;
 package test;
 use Moo;
@@ -35,7 +35,7 @@ chdir("t");
 my @output = $test->_capture([$output_exe]);
 ok(1);
 
-is_deeply(\@output,['Hello','Goodbye'],"Scalar capture");
+is_deeply(\@output,["Hello\n","Goodbye\n"],"Scalar capture");
 is($/,"\n","IFS intact");
 
 my $qx_output = qx([$output_exe]);
@@ -46,7 +46,7 @@ my $qx_output = qx([$output_exe]);
 @output = $test->_capture([$output_exe]);
 ok(1);
 
-is_deeply(\@output,["Hello", "Goodbye"],"List capture");
+is_deeply(\@output,["Hello\n", "Goodbye\n"],"List capture");
 is($/,"\n","IFS intact");
 
 my $no_output;
@@ -66,5 +66,5 @@ print "# buffer test string";	# NB, no trailing newline
 
 print "\n";  # Terminates our test string above in TAP output
 
-is_deeply(\@output,['Hello','Goodbye'],"Single-arg capture still works");
+is_deeply(\@output,["Hello\n","Goodbye\n"],"Single-arg capture still works");
 1;
