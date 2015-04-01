@@ -1,5 +1,7 @@
+#ABSTRACT: Exception class for MooX::Ipc::Cmd role
 package MooX::Ipc::Cmd::Exception;
 use Moo;
+#VERSION
 extends 'Throwable::Error';
 has 'stderr'      => (is => 'ro', predicate => 1,);
 has 'cmd'         => (is => 'ro', required  => 1,);

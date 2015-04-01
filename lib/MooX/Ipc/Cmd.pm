@@ -26,11 +26,34 @@ has _cmd_signal_from_number => (
                                 documentation => 'Posix signal number'
                                );
 
+
+=attrib _cmd_kill
+
+If set to 1 will send the propgate signal when cmd exits due to signal.
+
+Reader: _cmd_kill
+
+Default: 1
+
+=cut
+
 has _cmd_kill => (
                   is            => 'ro',
                   default       => 0,
                   documentation => 'If set to 1 will send the propogate signal when cmd exits due to signal.'
                  );
+
+=attrib mock
+
+Mocks the cmd, does not run
+
+Reader: mock 
+
+Default: 0
+
+Command line option, via MooX::Options
+
+=cut
 
 option mock => (
                 is            => 'ro',
@@ -42,15 +65,13 @@ option mock => (
 
 Runs a command like system call, with the output silently dropped, unless debug is on
 
-=item Params:
+
 =for :list
-* $cmd : arrayref of the command to send to the shell
-
-=item Returns:
-* exit code
-
-=item Exception
-
+= Params:
+ $cmd : arrayref of the command to send to the shell
+= Returns:
+exit code
+= Exception
 Throws an error when case dies, will also log error using log::any category _cmd
 
 =cut
@@ -87,30 +108,30 @@ sub _system
     $self->_check_error($error, $cmd, $stderr);
     return $error;
 }
-
+# =for :list
+# * $cmd : arrayref of the command to send to the shell
+#
+# =item Returns:
+#
+# combined stderr stdout
+#
+# =item Exception
+#
+# Throws an error when case dies, will also log error using log::any category _cmd
+#
+#  
 =method _capture(\@cmd',\%opts);
 Runs a command like qx call.  Will display cmd executed = item Params :
-
-=for :list
-* $cmd : arrayref of the command to send to the shell
-
-=item Returns:
-
-combined stderr stdout
-
-=item Exception
-
-Throws an error when case dies, will also log error using log::any category _cmd
 
 =cut
 
 sub _capture
 {
-    my $self = shift;
-    my ($cmd) = @_;
+    state $check= compile(Object, ArrayRef [Str]);
+    my ($self, $cmd) = $check->(@_);
+    $self->logger('_cmd')->debug('Executing ' . join(' ', @$cmd));
 
     my @ret;
-    $self->logger('_cmd')->debug('Executing ', @$cmd);
     return 0 if ($self->mock);
 
     my $output = [];
@@ -124,96 +145,104 @@ sub _capture
     }
     else
     {
-        run3(
-            $cmd, \undef, sub {$self->_cmd_stdout($_, $output);}, sub {$self->_cmd_stderr($stderr, $output, $_);},
-            {return_if_system_error => 1},
+        run3($cmd, \undef,
+             sub {$self->_cmd_stdout($_, $output);},
+             sub {$self->_cmd_stderr($stderr, $output, $_);},
+             {return_if_system_error => 1},
             );
     }
     my $exit_status = $?;
 
     $self->_check_error($exit_status, $cmd, $stderr);
     if (defined $output)
-      {
-          return @$output;
+    {
+        if (wantarray)
+        {
+            return @$output;
+        }
+        else
+        {
+            return $output;
+        }
     }
     else {return}
 }
 
 sub _cmd_stdout
-  {
-      my $self = shift;
-      my ($line, $output) = @_;
-      if (defined $output)
-      {
-          push(@$output, $line);
-      }
-      chomp $line;
-      $self->logger('_cmd')->debug($line);
+{
+    my $self = shift;
+    my ($line, $output) = @_;
+    if (defined $output)
+    {
+        push(@$output, $line);
+    }
+    chomp $line;
+    $self->logger('_cmd')->debug($line);
 }
 
 #sub routine to push output to the stderr and global output variables
 # ignores lfs batch system concurrent spew
 sub _cmd_stderr
-  {
-      my $self   = shift;
-      my $stderr = shift;
-      my $output = shift;
-      my $line   = $_;      # output from cmd
+{
+    my $self   = shift;
+    my $stderr = shift;
+    my $output = shift;
+    my $line   = $_;      # output from cmd
 
-      return if ($line =~ / Batch system concurrent query limit exceeded/);    # ignores lfs spew
-      push(@$stderr, $line);
-      push(@$output, $line) if (defined $output);
-      chomp $line;
-      if ($self->logger('_cmd')->is_debug)
-      {
-          $self->logger('_cmd')->debug($line);
-      }
+    return if ($line =~ / Batch system concurrent query limit exceeded/);    # ignores lfs spew
+    push(@$stderr, $line);
+    push(@$output, $line) if (defined $output);
+    chomp $line;
+    if ($self->logger('_cmd')->is_debug)
+    {
+        $self->logger('_cmd')->debug($line);
+    }
 }
 
 #most of _check_error stolen from IPC::Simple
 sub _check_error
-  {
-      my $self = shift;
-      my ($child_error, $cmd, $stderr) = @_;
+{
+    my $self = shift;
+    my ($child_error, $cmd, $stderr) = @_;
 
-      if ($child_error == -1)
-      {
-          my $opt = {
-                     cmd         => $cmd,
-                     exit_status => $child_error,
-                     stderr      => $!,
-                    };
-          $opt->{stderr} = $stderr if (defined $stderr);
-          MooX::Ipc::Cmd::Exception->throw($opt);
-      }
-      if (WIFSIGNALED($child_error))    # check to see if child error
-      {
-          my $signal_no = WTERMSIG($child_error);
+    if ($child_error == -1)
+    {
+        my $opt = {
+                   cmd         => $cmd,
+                   exit_status => $child_error,
+                   stderr      => $!,
+                  };
+        $opt->{stderr} = $stderr if (defined $stderr);
+        MooX::Ipc::Cmd::Exception->throw($opt);
+    }
+    if (WIFSIGNALED($child_error))    # check to see if child error
+    {
+        my $signal_no = WTERMSIG($child_error);
 
-          #kill with signal if told to
-          if ($self->_cmd_kill)
-          {
-              kill $signal_no;
-          }
+        #kill with signal if told to
+        if ($self->_cmd_kill)
+        {
+            kill $signal_no;
+        }
 
-          my $signal_name = $self->_cmd_signal_from_number->[$signal_no] || "UNKNOWN";
+        my $signal_name = $self->_cmd_signal_from_number->[$signal_no] || "UNKNOWN";
 
-          my $opt = {
-                     cmd         => $cmd,
-                     exit_status => $child_error,
-                     signal      => $signal_name,
-                    };
-          $opt->{stderr} = $stderr if (defined $stderr);
-          MooX::Ipc::Cmd::Exception->throw($opt);
-      }
-      elsif ($child_error != 0)
-      {
-          my $opt = {
-                     cmd         => $cmd,
-                     exit_status => $child_error >> 8,    # get the real exit status if no signal
-                    };
-          $opt->{stderr} = $stderr if (defined $stderr);
-          MooX::Ipc::Cmd::Exception->throw($opt);
-      }
+        my $opt = {
+                   cmd         => $cmd,
+                   exit_status => $child_error,
+                   signal      => $signal_name,
+                  };
+        $opt->{stderr} = $stderr if (defined $stderr);
+        MooX::Ipc::Cmd::Exception->throw($opt);
+    }
+    elsif ($child_error != 0)
+    {
+        my $opt = {
+                   cmd         => $cmd,
+                   exit_status => $child_error >> 8,    # get the real exit status if no signal
+                  };
+        $opt->{stderr} = $stderr if (defined $stderr);
+        MooX::Ipc::Cmd::Exception->throw($opt);
+    }
 }
 1;
