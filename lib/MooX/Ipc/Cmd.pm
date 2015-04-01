@@ -1,4 +1,40 @@
 #ABSTRACT: Moo role for issuing commands, with debug support, and signal handling
+
+=SYNOPSIS
+
+
+This role provides the ability to capture system calls, and to execute system calls.
+
+Features
+
+=for :list
+* debug switch
+* Prints output in realtime, in debug mode
+* Handles signals, and kills via signal if configured too.
+* Uses Log::Any for logging
+* Command line option
+
+    package Moo_Package;
+    use Moo;
+    use MooX::Options; # required before with statement
+    with qw(MooX::Ipc::Cmd);
+
+    has '+_cmd_kill' => (default=>1); # override default
+    sub run {
+        my $self=shift
+        $self->_system(['cmd']);
+        my @result=$self->_capture(['results']);
+    }
+    1;
+
+    package main
+    use Log::Any::Adapter('Stdout');  #setup Log::Any::Adapter;
+    my $app=Moo_Package->new_with_options(debug=>0,_cmd_kill=>0); #command line processing
+    my $app=Moo_Package->new(debug=>0,_cmd_kill=>0); #no command line processing
+    1;
+
+=cut
+
 package MooX::Ipc::Cmd;
 use Moo::Role;
 use MooX::Options;

@@ -12,7 +12,7 @@ use constant NO_SUCH_CMD => "this_command_had_better_not_exist_either";
 use constant NOT_AN_EXE  => "not_an_exe.txt";
 use List::Util qw(any);;
 my $test=test->new;
-plan tests => 14;
+plan tests => 13;
 
 # We want to invoke our sub-commands using Perl.
 
