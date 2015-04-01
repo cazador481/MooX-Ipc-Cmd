@@ -52,7 +52,6 @@ use MooX::Ipc::Cmd::Exception;
 
 # use namespace::clean -except=> [qw/_options_data _options_config/];
 
-#VERSION
 
 use constant UNDEFINED_POSIX_RE => qr{not (?:defined|a valid) POSIX macro|not implemented on this architecture};
 
@@ -116,7 +115,6 @@ sub _system
 {
     state $check= compile(Object, ArrayRef [Str]);
     my ($self, $cmd) = $check->(@_);
-    my @ret;
 
     $self->logger('_cmd')->debug('Executing ' . join(' ', @$cmd));
     return 0 if ($self->mock);
@@ -167,7 +165,6 @@ sub _capture
     my ($self, $cmd) = $check->(@_);
     $self->logger('_cmd')->debug('Executing ' . join(' ', @$cmd));
 
-    my @ret;
     return 0 if ($self->mock);
 
     my $output = [];
