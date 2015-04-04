@@ -5,6 +5,7 @@ Revision history for {{$dist->name}}
 
  [BUG FIXES]
  - Added authorpreq Pod::Elemental::Transformer::List
+ - Fixed issue #1, internationalization of error
 
  [DOCUMENTATION]
 
