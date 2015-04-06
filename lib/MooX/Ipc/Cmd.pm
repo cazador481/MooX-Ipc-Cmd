@@ -1,7 +1,6 @@
 #ABSTRACT: Moo role for issuing commands, with debug support, and signal handling
 
-=SYNOPSIS
-
+=head1 SYNOPSIS
 
 This role provides the ability to capture system calls, and to execute system calls.
 
@@ -11,7 +10,7 @@ Features
 * debug switch
 * Prints output in realtime, in debug mode
 * Handles signals, and kills via signal if configured too.
-* Uses Log::Any for logging
+* Uses Log::Any for logging.  If in debug mode, will log output of commands, execution line
 * Command line option
 
     package Moo_Package;
@@ -62,7 +61,7 @@ has _cmd_signal_from_number => (
                                );
 
 
-=attrib _cmd_kill
+=attribute _cmd_kill
 
 If set to 1 will send the propgate signal when cmd exits due to signal.
 
@@ -78,7 +77,7 @@ has _cmd_kill => (
                   documentation => 'If set to 1 will send the propogate signal when cmd exits due to signal.'
                  );
 
-=attrib mock
+=attribute mock
 
 Mocks the cmd, does not run
 
