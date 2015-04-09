@@ -242,7 +242,7 @@ sub _check_error
         my $opt = {
                    cmd         => $cmd,
                    exit_status => $child_error,
-                   stderr      => $!,
+                   stderr      => [$!],
                   };
         $opt->{stderr} = $stderr if (defined $stderr);
         MooX::Ipc::Cmd::Exception->throw($opt);

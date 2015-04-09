@@ -4,6 +4,8 @@ Revision history for {{$dist->name}}
  [API CHANGE]
 
  [BUG FIXES]
+ - Exception did not print out full error message
+ - Did not throw array with $!
 
  [DOCUMENTATION]
 

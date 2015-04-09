@@ -28,7 +28,7 @@ has +message => (
             $str .= " failed with exit status " . $self->exit_status;
             if ($self->has_stderr && defined $self->stderr)
             {
-                $str = "\nSTDERR is :\n" . join("\n  ", @{$self->stderr});
+                $str .= "\nSTDERR is :\n" . join("\n  ", @{$self->stderr});
             }
         }
         return $str;
