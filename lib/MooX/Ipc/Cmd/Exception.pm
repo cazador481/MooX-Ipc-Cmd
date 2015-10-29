@@ -12,6 +12,10 @@ use overload
   q{""}    => 'as_string',
   fallback => 1;
 
+ has +stack_trace_args => (
+     is=>'ro',
+     default=>sub{return [ skip_frames=>5,ignore_package=>['MooX::Ipc::Cmd','MooX::Ipc::Cmd::Exception'] ]},
+ );
   #message to print when dieing
 has +message => (
     is =>'ro',
@@ -28,7 +32,7 @@ has +message => (
             $str .= " failed with exit status " . $self->exit_status;
             if ($self->has_stderr && defined $self->stderr)
             {
-                $str .= "\nSTDERR is :\n" . join("\n  ", @{$self->stderr});
+                $str .= "\nSTDERR is :\n  " . join("\n  ", @{$self->stderr});
             }
         }
         return $str;
