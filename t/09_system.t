@@ -8,8 +8,8 @@ use Moo;
 use MooX::Options;
 with qw(MooX::Ipc::Cmd);
 1;
-
 package main;
+use Cwd qw(getcwd);
 
 
 # We want to invoke our sub-commands using Perl.
@@ -56,6 +56,6 @@ dies_ok(sub {$test->_system(['adsfadsf/adsfasfd'])}, 'Non existing file');
 
 is ($@->exit_status,-1,'Non existing exit status');
 
-throws_ok{$test->_system(['stderr_output.pl 1'])} qr/  Hello\n  Goodbye\n/m,'Captures stderr';
+throws_ok{$test->_system(["$perl_path","stderr_output.pl", '1'])} qr/  Hello\n  Goodbye\n/m,'Captures stderr';
 
 1;

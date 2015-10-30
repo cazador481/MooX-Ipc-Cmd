@@ -3,6 +3,7 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
  [API CHANGE]
  [BUG FIXES]
+  - Fix failures in non linux builds
  [DOCUMENTATION]
  [MAJOR]
 
