@@ -6,6 +6,7 @@ Revision history for {{$dist->name}}
  [BUG FIXES]
 
  [DOCUMENTATION]
+ -Removed reference to debug mode, better documentation
 
  [ENHANCEMENTS]
 

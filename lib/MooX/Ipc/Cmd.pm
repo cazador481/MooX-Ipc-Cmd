@@ -7,10 +7,9 @@ This role provides the ability to capture system calls, and to execute system ca
 Features
 
 =for :list
-* debug switch
 * Prints output in realtime, in debug mode
 * Handles signals, and kills via signal if configured too.
-* Uses Log::Any for logging.  If in debug mode, will log output of commands, execution line
+* Uses Log::Any for logging.  If in debug mode, will log output of commands, and execution line
 * Command line option
 
     package Moo_Package;
@@ -28,8 +27,8 @@ Features
 
     package main
     use Log::Any::Adapter('Stdout');  #setup Log::Any::Adapter;
-    my $app=Moo_Package->new_with_options(debug=>0,_cmd_kill=>0); #command line processing
-    my $app=Moo_Package->new(debug=>0,_cmd_kill=>0); #no command line processing
+    my $app=Moo_Package->new_with_options(_cmd_kill=>0); #command line processing
+    my $app=Moo_Package->new(_cmd_kill=>0); #no command line processing
     1;
 
 =cut
@@ -97,15 +96,13 @@ option mock => (
 
 =method _system(\@cmd', /%opts);
 
-Runs a command like system call, with the output silently dropped, unless debug is on
+Runs a command like system call, with the output silently dropped, unless in log::any debug level
 
 =for :list
 = Params:
  $cmd : arrayref of the command to send to the shell
-= %opts
- valid_exit => [0] - exits to not throw exception, defaults to 0
- 
-=for :list 
+ %opts
+   valid_exit => [0] - exits to not throw exception, defaults to 0
 = Returns:
 exit code
 = Exception
@@ -146,20 +143,22 @@ sub _system
 }
 
 =method _capture(\@cmd',\%opts);
+
 Runs a command like qx call.  Will display cmd executed 
 
-=for list:
-=  Params :
- $cmd : arrayref of the command to send to the shell
-= %opts
- valid_exit => [0] - exits to not throw exception, defaults to 0
+=begin :list
 
-=for list:
-=Returns:
+= Params:
+ $cmd: arrayref of the command to send to the shell
+ %opts:
+    valid_exit => [0] - exits to not throw exception, defaults to 0
+
+= Returns:
 combined stderr stdout
-=Exception
-Throws an error when case dies, will also log error using log::any category _cmd
+= Exception
+Throws an MooX::Ipc::Cmd::Exception error
 
+=end :list
 
 =cut
 
