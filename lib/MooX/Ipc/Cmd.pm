@@ -47,8 +47,8 @@ use feature qw(state);
 use IPC::Run3;
 use MooX::Ipc::Cmd::Exception;
 use List::Util 1.33;
+use namespace::autoclean;
 
-# use namespace::clean -except=> [qw/_options_data _options_config/];
 
 
 use constant UNDEFINED_POSIX_RE => qr{not (?:defined|a valid) POSIX macro|not implemented on this architecture};
