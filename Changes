@@ -8,9 +8,12 @@ Revision history for {{$dist->name}}
  [DOCUMENTATION]
 
  [ENHANCEMENTS]
- -Cleanup namespace after itself
 
  [MAJOR]
+
+1.2.0 2016-11-11T07:55:10-08:00 America/Los_Angeles
+ [ENHANCEMENTS]
+ - -Cleanup namespace after itself
 
 1.1.2 2015-11-05T08:43:23-08:00 America/Los_Angeles
  [DOCUMENTATION]
