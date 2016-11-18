@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/bin/env perl
 use strict;
 
 # Prints a simple greeting.

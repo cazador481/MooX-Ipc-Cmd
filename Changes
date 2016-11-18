@@ -4,6 +4,7 @@ Revision history for {{$dist->name}}
  [API CHANGE]
 
  [BUG FIXES]
+ Cleanup namespace in the Exception package
 
  [DOCUMENTATION]
 

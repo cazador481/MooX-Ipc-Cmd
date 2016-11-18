@@ -7,7 +7,7 @@ has 'stderr'      => (is => 'ro', predicate => 1,);
 has 'cmd'         => (is => 'ro', required  => 1,);
 has 'exit_status' => (is => 'ro', required  => 1);
 has 'signal'      => (is => 'ro', predicate => 1,);
-
+use namespace::autoclean;
 use overload
   q{""}    => 'as_string',
   fallback => 1;
