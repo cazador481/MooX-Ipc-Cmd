@@ -4,13 +4,16 @@ Revision history for {{$dist->name}}
  [API CHANGE]
 
  [BUG FIXES]
- Cleanup namespace in the Exception package
 
  [DOCUMENTATION]
 
  [ENHANCEMENTS]
 
  [MAJOR]
+
+1.2.1 2016-11-18T10:25:48-08:00 America/Los_Angeles
+ [BUG FIXES]
+ - Cleanup namespace in the Exception package
 
 1.2.0 2016-11-11T07:55:10-08:00 America/Los_Angeles
  [ENHANCEMENTS]
