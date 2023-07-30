@@ -31,7 +31,7 @@ if ($^O ne 'VMS') {
                 unless $perl_path =~ m/$Config{_exe}$/i;
 }
 
-use_ok("MooX::Ipc::Cmd","run");
+use_ok("MooX::Ipc::Cmd");
 
 chdir("t");
 
